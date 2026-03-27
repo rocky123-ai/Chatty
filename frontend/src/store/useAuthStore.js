@@ -3,7 +3,16 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5001";
+const normalizeAbsoluteUrl = (url) => {
+  if (!url) return "";
+  const trimmedUrl = url.trim().replace(/\/$/, "");
+  if (/^https?:\/\//i.test(trimmedUrl)) return trimmedUrl;
+  return `https://${trimmedUrl}`;
+};
+
+const BASE_URL =
+  normalizeAbsoluteUrl(import.meta.env.VITE_SOCKET_URL) ||
+  "http://localhost:5001";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,

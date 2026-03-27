@@ -1,9 +1,21 @@
 import axios from "axios";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+const normalizeAbsoluteUrl = (url) => {
+  if (!url) return "";
+  const trimmedUrl = url.trim().replace(/\/$/, "");
+  if (/^https?:\/\//i.test(trimmedUrl)) return trimmedUrl;
+  return `https://${trimmedUrl}`;
+};
+
+const getApiBaseUrl = () => {
+  const configuredUrl = normalizeAbsoluteUrl(import.meta.env.VITE_API_URL);
+  if (!configuredUrl) return "http://localhost:5001/api";
+  return configuredUrl.endsWith("/api")
+    ? configuredUrl
+    : `${configuredUrl}/api`;
+};
 
 export const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   withCredentials: true,
 });
