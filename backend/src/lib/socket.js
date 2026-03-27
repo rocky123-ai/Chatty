@@ -5,9 +5,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const normalizeOrigin = (url = "") =>
+  url
+    .trim()
+    .replace(/^['\"]|['\"]$/g, "")
+    .replace(/\/$/, "");
+
 const frontendUrls = (process.env.FRONTEND_URL || "http://localhost:5173")
   .split(",")
-  .map((url) => url.trim())
+  .map(normalizeOrigin)
   .filter(Boolean);
 
 const app = express();

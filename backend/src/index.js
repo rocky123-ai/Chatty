@@ -16,16 +16,25 @@ dotenv.config();
 
 const PORT = process.env.PORT;
 const __dirname = path.resolve();
+
+const normalizeOrigin = (url = "") =>
+  url
+    .trim()
+    .replace(/^['\"]|['\"]$/g, "")
+    .replace(/\/$/, "");
+
 const frontendUrls = (process.env.FRONTEND_URL || "http://localhost:5173")
   .split(",")
-  .map((url) => url.trim())
+  .map(normalizeOrigin)
   .filter(Boolean);
 
 const corsOrigin = (origin, callback) => {
   // Allow server-to-server calls or tools with no origin header.
   if (!origin) return callback(null, true);
 
-  if (frontendUrls.includes(origin)) {
+  const normalizedOrigin = normalizeOrigin(origin);
+
+  if (frontendUrls.includes(normalizedOrigin)) {
     return callback(null, true);
   }
 
